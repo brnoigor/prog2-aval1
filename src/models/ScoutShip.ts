@@ -7,7 +7,7 @@ export class ScoutShip extends Spacecraft {
 
   canDeliver(cargo: Cargo, planet: Planet): boolean {
     const hasCapacity = this.usedCapacity + cargo.weight <= this.capacity;
-    const hasFuel = this.fuel >= planet.distance * 0.18; // Scout consome menos
+    const hasFuel = this.fuel >= planet.distance * 0.18;
     return hasCapacity && hasFuel;
   }
 

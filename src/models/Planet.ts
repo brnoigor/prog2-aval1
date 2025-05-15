@@ -1,7 +1,7 @@
 export class Planet {
     constructor(
       public name: string,
-      public distance: number, // em milhões de km
+      public distance: number, 
       public type: string,
       public acceptedCargoTypes: string[]
     ) {}
