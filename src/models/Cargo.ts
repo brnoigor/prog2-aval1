@@ -5,7 +5,6 @@ export class Cargo {
       public type: string,
       public isShielded: boolean 
     ) {}
-  
     getShieldedStatus(): string {
       return this.isShielded ? "shielded" : "unshielded";
     }
