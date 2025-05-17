@@ -2,16 +2,20 @@ import { Spacecraft } from "../models/Spacecraft";
 import { Planet } from "../models/Planet";
 import { Cargo } from "../models/Cargo";
 
+function getRandomElement<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)];
+}
+
 export class MissionControl {
   private log: string[] = [];
   private visitedPlanets = new Map<string, string>();
   private allCargos: Cargo[] = [];
 
-  assign(ship: Spacecraft) {
+  assign(ship: Spacecraft): void {
     this.log.push(`Assigned spacecraft: ${ship.name} | Fuel: ${ship.fuel} | Capacity: ${ship.capacity}`);
   }
 
-  executeMission(ship: Spacecraft, planet: Planet, cargo: Cargo) {
+  executeMission(ship: Spacecraft, planet: Planet, cargo: Cargo): void {
     this.log.push(`\nMission: ${ship.name} -> ${planet.name}`);
 
     const distance = planet.distance;
@@ -25,18 +29,20 @@ export class MissionControl {
     let deliveredSuccessfully = false;
 
     if (!planet.accepts(cargo.type)) {
-        this.log.push(`${ship.name} failed to deliver "${cargo.name}": cargo not accepted by ${planet.name}.`);
+      this.log.push(`${ship.name} failed to deliver "${cargo.name}": cargo not accepted by ${planet.name}.`);
     } else if (!hasCapacity) {
-        this.log.push(`${ship.name} failed to deliver "${cargo.name}": exceeds capacity.`);
+      this.log.push(`${ship.name} failed to deliver "${cargo.name}": exceeds capacity.`);
     } else if (!hasFuel) {
-        this.log.push(`${ship.name} failed to deliver "${cargo.name}": insufficient fuel.`);
+      this.log.push(`${ship.name} failed to deliver "${cargo.name}": insufficient fuel.`);
     } else {
-        ship.consumeFuel(distance, cargo);
-        this.log.push(`${ship.name} delivered "${cargo.name}" to ${planet.name}.`);
-        deliveredSuccessfully = true;
+      ship.consumeFuel(distance, cargo);
+      this.log.push(`${ship.name} delivered "${cargo.name}" to ${planet.name}.`);
+      deliveredSuccessfully = true;
     }
 
-    this.log.push(`Fuel remaining: ${ship.fuel.toFixed(1)} | Capacity remaining: ${ship.capacity - ((ship as any).usedCapacity || 0)}`);
+    this.log.push(
+      `Fuel remaining: ${ship.fuel.toFixed(1)} | Capacity remaining: ${ship.capacity - ((ship as any).usedCapacity || 0)}`
+    );
 
     const cargoCopy = new Cargo(cargo.name, cargo.weight, cargo.type, deliveredSuccessfully);
     this.allCargos.push(cargoCopy);
@@ -44,10 +50,24 @@ export class MissionControl {
     this.visitedPlanets.set(planet.name, `${planet.type}Planet`);
   }
 
+  launchRandomMission(ships: Spacecraft[], planets: Planet[], cargos: Cargo[]): void {
+    if (ships.length === 0 || planets.length === 0 || cargos.length === 0) {
+      this.log.push("Não é possível lançar missão: faltam naves, planetas ou cargas.");
+      return;
+    }
+
+    const ship = getRandomElement(ships);
+    const planet = getRandomElement(planets);
+    const cargo = getRandomElement(cargos);
+
+    this.assign(ship);
+    this.executeMission(ship, planet, cargo);
+  }
+
   report(): string[] {
     this.log.push(`\nCargo summary:`);
-    this.allCargos.forEach(c => {
-      const shieldedStatus = c.isShielded ? "shielded" : "unshielded"; 
+    this.allCargos.forEach((c) => {
+      const shieldedStatus = c.isShielded ? "shielded" : "unshielded";
       this.log.push(`- ${c.name.toLowerCase()} | ${c.weight}kg | ${shieldedStatus}`);
     });
 
