@@ -33,5 +33,5 @@ Alternatively, run directly with ts-node (if installed):
 npx ts-node src/index.ts
 ```
 ## Class Diagram
-(./assets/diagram.png)
+![Class Diagram](./assets/diagram.png)
 
