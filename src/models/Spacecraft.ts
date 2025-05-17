@@ -2,6 +2,8 @@ import { Cargo } from "./Cargo";
 import { Planet } from "./Planet";
 
 export abstract class Spacecraft {
+  public usedCapacity: number = 0;
+
   constructor(
     public name: string,
     public fuel: number,
