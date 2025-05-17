@@ -3,8 +3,6 @@ import { Cargo } from "./Cargo";
 import { Planet } from "./Planet";
 
 export class CargoShip extends Spacecraft {
-  public usedCapacity: number = 0;
-
   canDeliver(cargo: Cargo, planet: Planet): boolean {
     const hasCapacity = this.usedCapacity + cargo.weight <= this.capacity;
     const hasFuel = this.fuel >= planet.distance * 0.2;
